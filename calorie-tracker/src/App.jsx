@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ColorGenerator, calculateCalories } from "calorie-lib";
 function App() {
   return (
     <div className="container mt-4">
@@ -11,6 +12,38 @@ function App() {
           <button className="btn btn-danger btn-sm">Видалити</button>{" "}
         </div>
       </div>{" "}
+      <div
+        onClick={changeColor}
+        style={{ cursor: "pointer", display: "inline-block", padding: "10px" }}
+      >
+        <div
+          style={{
+            width: "35px",
+            height: "5px",
+            backgroundColor: menuColor,
+            margin: "6px 0",
+            transition: "0.3s",
+          }}
+        ></div>
+        <div
+          style={{
+            width: "35px",
+            height: "5px",
+            backgroundColor: menuColor,
+            margin: "6px 0",
+            transition: "0.3s",
+          }}
+        ></div>
+        <div
+          style={{
+            width: "35px",
+            height: "5px",
+            backgroundColor: menuColor,
+            margin: "6px 0",
+            transition: "0.3s",
+          }}
+        ></div>
+      </div>
     </div>
   );
 }
