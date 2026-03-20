@@ -79,36 +79,50 @@ function App() {
             />
           </div>
         </div>
+
         <div className="mb-2">
           <label htmlFor="activity" className="form-label">
-            Ваша активність(від 1 до 5)
+            Ваша активність(від 1 до 5 )
           </label>
           <input id="activity" className="form-control" placeholder="1" />
         </div>
       </div>
+
       <div className="card shadow-sm mb-3">
         <div className="card-body">
           <h5 className="card-title mb-3"> Поточні дані</h5>
           <div className="mb-2">
             <label htmlFor="calories"> Калорії</label>
-            <input id="calories" className="form-control" placeholder="ккал" />
-            readOnly{" "}
+            <input
+              id="calories"
+              className="form-control"
+              placeholder="ккал"
+              readOnly
+            />
           </div>
           <div className="progress mt-2" style={{ height: "12px" }}>
             <div className="progress-bar bg-success" style={{ width: "60%" }} />
           </div>
           <div className="mb-2">
             <label htmlFor="proteins"> Білок </label>
-            <input id="proteins" className="form-control" placeholder="г" />
-            readOnly{" "}
+            <input
+              id="proteins"
+              className="form-control"
+              placeholder="г"
+              readOnly
+            />
           </div>
           <div className="progress mt-2" style={{ height: "12px" }}>
             <div className="progress-bar bg-success" style={{ width: "60%" }} />
           </div>
           <div className="mb-2">
             <label htmlFor="fats"> Жири </label>
-            <input id="fats" className="form-control" placeholder="г" />
-            readOnly{" "}
+            <input
+              id="fats"
+              className="form-control"
+              placeholder="г"
+              readOnly
+            />
           </div>
           <div className="progress mt-2" style={{ height: "12px" }}>
             <div className="progress-bar bg-success" style={{ width: "60%" }} />
@@ -116,11 +130,21 @@ function App() {
         </div>
         <div className="mb-2">
           <label htmlFor="carbohydrates"> Вуглеводи </label>
-          <input id="carbohydrates" className="form-control" placeholder="г" />
-          readOnly{" "}
+          <input
+            id="carbohydrates"
+            className="form-control"
+            placeholder="г"
+            readOnly
+          />
         </div>
         <div className="progress mt-2" style={{ height: "12px" }}>
           <div className="progress-bar bg-success" style={{ width: "60%" }} />
+        </div>
+      </div>
+      <div className="container shadow-sm mb-3">
+        <div className="card-body">
+          <h5 className="card-title mb-3">Мій щоденник</h5>
+          <div> </div>
         </div>
       </div>
     </div>
