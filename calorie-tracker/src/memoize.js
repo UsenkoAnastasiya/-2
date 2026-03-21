@@ -15,3 +15,17 @@ export function calculateBMR(age, weight, height, gender, activity) {
   };
   return Math.round(bmr * activitylevel[activity]);
 }
+export function memoize(fn, { MAXSIZE = Infinity, strategy = "LRU" } = {}) {
+  const map = new Map();
+  return function (...arr) {
+    const key = cache();
+    if (cache.has(key)) {
+      map.delete(key);
+    }
+    map.get(key);
+    if (map.size === MAXSIZE) {
+      map.delete();
+      map.get(key);
+    }
+  };
+}
