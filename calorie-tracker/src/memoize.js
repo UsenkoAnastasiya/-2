@@ -18,14 +18,18 @@ export function calculateBMR(age, weight, height, gender, activity) {
 export function memoize(fn, { MAXSIZE = Infinity, strategy = "LRU" } = {}) {
   const map = new Map();
   return function (...arr) {
-    const key = cache();
-    if (cache.has(key)) {
+    const key = JSON.stringify(arr);
+    if (map.has(key)) {
+      const value = map.get(key);
       map.delete(key);
+      map.set(key, value);
+      return value;
     }
-    map.get(key);
+    const result = fn(...arr);
     if (map.size === MAXSIZE) {
-      map.delete();
-      map.get(key);
+      map.delete(map.keys().next().value);
     }
+    map.set(key, result);
+    return result;
   };
 }
