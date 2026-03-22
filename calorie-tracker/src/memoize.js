@@ -26,10 +26,17 @@ export function memoize(fn, { MAXSIZE = Infinity, strategy = "LRU" } = {}) {
       return value;
     }
     const result = fn(...arr);
-    if (map.size === MAXSIZE) {
-      map.delete(map.keys().next().value);
+
+    if (map.size >= MAXSIZE) {
+      if (typeof strategy === "function") {
+        const keytodelete = strategy(map);
+        map.delete(keytodelete);
+      } else if (strategy === "LRU") {
+        map.delete(map.keys().next().value);
+      }
     }
     map.set(key, result);
     return result;
   };
 }
+export const memoizedBMR = memoize(calculateBMR, { MAXSIZE: 100 });
