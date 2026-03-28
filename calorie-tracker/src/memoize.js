@@ -29,6 +29,7 @@ export function memoize(
       map.delete(key);
       map.set(key, value);
       freqMap.set(key, freqMap.get(key) + 1);
+      TimeMap.set(key, Date.now());
       return value;
     }
     const result = fn(...arr);
@@ -49,6 +50,11 @@ export function memoize(
           }
         }
       } else if (strategy === " TIME") {
+        for (const [key] of TimeMap) {
+          const time = Data.now() - TimeMap();
+          if (time > ttl) map.delete(key);
+          TimeMap.delete(key);
+        }
       }
     }
     map.set(key, result);
