@@ -49,17 +49,21 @@ export function memoize(
             break;
           }
         }
-      } else if (strategy === " TIME") {
+      } else if (strategy === "TIME") {
         for (const [key] of TimeMap) {
-          const time = Data.now() - TimeMap();
-          if (time > ttl) map.delete(key);
-          TimeMap.delete(key);
+          const time = Date.now() - TimeMap.get(key);
+          if (time > ttl * 1000) {
+            map.delete(key);
+            TimeMap.delete(key);
+          }
         }
       }
     }
     map.set(key, result);
     freqMap.set(key, 1);
+    TimeMap.set(key, Date.now());
     return result;
   };
 }
+
 export const memoizedBMR = memoize(calculateBMR, { MAXSIZE: 100 });
