@@ -22,14 +22,15 @@ function App() {
       <Navbar onNavigate={setActivePage} />
 
       <div className="row mb-3">
-        <Search onSearch={setSearchQuery} />
+        <div className="col-12">
+          <Search onSearch={setSearchQuery} />
+        </div>
       </div>
 
       <div className="row">
-        {/* Колонка для карток пошуку */}
         <div className="col-md-4">
           {searchQuery && (
-            <>
+            <div className="search-results">
               <Card
                 title="Яблуко"
                 calories="52"
@@ -42,24 +43,26 @@ function App() {
                 btnText="Видалити"
                 btnColor="btn-danger"
               />
-            </>
+            </div>
           )}
         </div>
 
-        {/* Основний контент (Центр + Права колонка) */}
         <div className="col-md-8">
           <div className="row">
-            {/* Центральна частина для форм та щоденника */}
-            <div className="col-md-8">
+            <div className="col-md-7">
               {activePage === "data" && (
                 <UserDataForm onSave={handleSaveData} />
               )}
               {activePage === "diary" && <Diary />}
+              {!activePage && (
+                <div className="alert alert-info">
+                  Виберіть розділ у меню, щоб почати
+                </div>
+              )}
             </div>
 
-            {/* Права частина для статистики */}
-            <div className="col-md-4">
-              <CurrentData />
+            <div className="col-md-5">
+              <CurrentData stats={userStats} />
             </div>
           </div>
         </div>

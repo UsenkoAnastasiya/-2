@@ -1,4 +1,12 @@
+import { useState } from "react";
+
 function Navbar({ onNavigate }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDropdown = () => setIsOpen(!isOpen);
+  const handleSelect = (page) => {
+    onNavigate(page);
+    setIsOpen(false);
+  };
   return (
     <div className="d-flex justify-content-between align-items-center mb-4">
       <h1>Мій калькулятор калорій</h1>
@@ -6,15 +14,19 @@ function Navbar({ onNavigate }) {
         <button
           className="btn btn-secondary dropdown-toggle"
           type="button"
-          data-bs-toggle="dropdown"
+          onClick={toggleDropdown}
         >
           Меню
         </button>
-        <ul className="dropdown-menu">
+
+        <ul
+          className={`dropdown-menu ${isOpen ? "show" : ""}`}
+          style={{ display: isOpen ? "block" : "none" }}
+        >
           <li>
             <button
               className="dropdown-item"
-              onClick={() => onNavigate("data")}
+              onClick={() => handleSelect("data")}
             >
               Мої дані
             </button>
@@ -22,7 +34,7 @@ function Navbar({ onNavigate }) {
           <li>
             <button
               className="dropdown-item"
-              onClick={() => onNavigate("diary")}
+              onClick={() => handleSelect("diary")}
             >
               Мій щоденник
             </button>
@@ -30,7 +42,7 @@ function Navbar({ onNavigate }) {
           <li>
             <button
               className="dropdown-item text-danger"
-              onClick={() => onNavigate(null)}
+              onClick={() => handleSelect(null)}
             >
               Закрити все
             </button>
@@ -40,5 +52,4 @@ function Navbar({ onNavigate }) {
     </div>
   );
 }
-
 export default Navbar;
