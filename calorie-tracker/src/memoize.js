@@ -1,4 +1,4 @@
-export function calculateBMR(age, weight, height, gender, activity) {
+export default function calculateBMR(age, weight, height, gender, activity) {
   let bmr = 0;
   if (gender === "female") {
     bmr = 10 * weight + 6.25 * height - 5 * age - 161;
