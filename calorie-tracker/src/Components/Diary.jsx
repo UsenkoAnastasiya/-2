@@ -4,23 +4,35 @@ function Diary({ meals, onRemove, onSave, history }) {
       <h5 className="card-title mb-3 text-primary">Мій щоденник</h5>
 
       <div className="mb-4">
-        <h6>Продукти за сьогодні:</h6>
+        <h6>Продукти за сьогодні (Priority Queue):</h6>
         {meals.length === 0 ? (
           <p className="small text-muted italic">Ще нічого не з'їдено</p>
         ) : (
+          /* ВИКОРИСТОВУЄМО ТІЛЬКИ ОДИН ЦИКЛ MAP */
           meals.map((item) => (
             <div
               key={item.id}
-              className="card mb-2 p-2 border-start border-success border-4"
+              className={`card mb-2 p-2 border-start border-4 ${
+                item.calories < 100 ? "border-success" : "border-warning"
+              }`}
             >
-              <div className="d-flex justify-content-between">
-                <strong>{item.title}</strong>
-                <span>{item.calories} ккал</span>
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{item.title}</strong>
+                  <span
+                    className="badge bg-light text-dark border ms-2"
+                    style={{ fontSize: "0.7rem" }}
+                  >
+                    Prio: {item.calories}
+                  </span>
+                </div>
+                <span className="fw-bold">{item.calories} ккал</span>
               </div>
             </div>
           ))
         )}
 
+        {/* КНОПКИ КЕРУВАННЯ — ТЕПЕР ВОНИ ТУТ */}
         {meals.length > 0 && (
           <div className="d-flex gap-2 mt-3">
             <button
@@ -33,7 +45,7 @@ function Diary({ meals, onRemove, onSave, history }) {
               className="btn btn-primary btn-sm flex-grow-1"
               onClick={onSave}
             >
-              💾 Зберегти сьогодні
+              💾 Зберегти день
             </button>
           </div>
         )}

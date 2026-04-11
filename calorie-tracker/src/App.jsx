@@ -35,10 +35,24 @@ function App() {
     setTodayMeals([]);
     alert("День збережено в історію!");
   };
+  // ... (інші імпорти та стан без змін)
+
   const addMeal = (product) => {
-    setTodayMeals([...todayMeals, { ...product, id: Date.now() }]);
-    console.log("Додано продукт:", product);
+    const newMeal = {
+      ...product,
+      id: Date.now(),
+      priority: product.calories, // Пріоритет базується на калоріях
+    };
+
+    setTodayMeals((prevMeals) => {
+      const updated = [...prevMeals, newMeal];
+      // СОРТУВАННЯ: менші калорії йдуть на початок
+      return updated.sort((a, b) => a.calories - b.calories);
+    });
+    console.log("Додано та відсортовано за пріоритетом:", product);
   };
+
+  // ... (решта файлу без змін)
 
   const handleSaveData = (data) => {
     setUserStats(data);
