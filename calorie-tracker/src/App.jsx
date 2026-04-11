@@ -13,9 +13,14 @@ function App() {
   const [todayMeals, setTodayMeals] = useState([]);
 
   const [history, setHistory] = useState([]);
+  const removeLastMeal = () => {
+    setTodayMeals((prevMeals) => {
+      if (prevMeals.length === 0) return prevMeals;
+      return prevMeals.slice(0, -1);
+    });
+  };
   const saveDayToHistory = () => {
     if (todayMeals.length === 0) return;
-
     const totalCalories = todayMeals.reduce(
       (sum, meal) => sum + meal.calories,
       0,
@@ -88,10 +93,12 @@ function App() {
               {activePage === "diary" && (
                 <Diary
                   meals={todayMeals}
+                  onRemove={removeLastMeal}
                   onSave={saveDayToHistory}
                   history={history}
                 />
               )}
+
               {!activePage && (
                 <div className="alert alert-info text-center">
                   Виберіть розділ у меню, щоб почати

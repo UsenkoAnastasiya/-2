@@ -1,9 +1,8 @@
-function Diary({ meals, onSave, history }) {
+function Diary({ meals, onRemove, onSave, history }) {
   return (
     <div className="card shadow-sm mb-3 p-3">
       <h5 className="card-title mb-3 text-primary">Мій щоденник</h5>
 
-      {/* Секція поточних продуктів */}
       <div className="mb-4">
         <h6>Продукти за сьогодні:</h6>
         {meals.length === 0 ? (
@@ -23,23 +22,31 @@ function Diary({ meals, onSave, history }) {
         )}
 
         {meals.length > 0 && (
-          <button
-            className="btn btn-primary btn-sm w-100 mt-2"
-            onClick={onSave}
-          >
-            Зберегти сьогодні
-          </button>
+          <div className="d-flex gap-2 mt-3">
+            <button
+              className="btn btn-outline-danger btn-sm flex-grow-1"
+              onClick={onRemove}
+            >
+              ✖ Видалити останнє
+            </button>
+            <button
+              className="btn btn-primary btn-sm flex-grow-1"
+              onClick={onSave}
+            >
+              💾 Зберегти сьогодні
+            </button>
+          </div>
         )}
       </div>
 
       <hr />
 
-      {/* Секція історії */}
       <div className="mt-3">
         <h6>Історія:</h6>
-        {history.length === 0 ? (
+        {history && history.length === 0 ? (
           <p className="small text-muted">Історія поки порожня</p>
         ) : (
+          history &&
           history.map((entry) => (
             <div key={entry.id} className="card mb-2 p-2 bg-light shadow-sm">
               <div className="d-flex justify-content-between align-items-center">
