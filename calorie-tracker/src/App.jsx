@@ -35,24 +35,22 @@ function App() {
     setTodayMeals([]);
     alert("День збережено в історію!");
   };
-  // ... (інші імпорти та стан без змін)
 
-  const addMeal = (product) => {
+  const addMeal = (product, weight = 100) => {
+    const factor = weight / 100;
     const newMeal = {
       ...product,
       id: Date.now(),
-      priority: product.calories, // Пріоритет базується на калоріях
+      calories: Math.round(product.calories * factor),
+      proteins: Math.round(product.proteins * factor * 10) / 10,
+      fats: Math.round(product.fats * factor * 10) / 10,
+      carbs: Math.round(product.carbs * factor * 10) / 10,
+      priority: Math.round(product.calories * factor),
     };
-
-    setTodayMeals((prevMeals) => {
-      const updated = [...prevMeals, newMeal];
-      // СОРТУВАННЯ: менші калорії йдуть на початок
-      return updated.sort((a, b) => a.calories - b.calories);
-    });
-    console.log("Додано та відсортовано за пріоритетом:", product);
+    setTodayMeals((prevMeals) =>
+      [...prevMeals, newMeal].sort((a, b) => a.calories - b.calories),
+    );
   };
-
-  // ... (решта файлу без змін)
 
   const handleSaveData = (data) => {
     setUserStats(data);
@@ -86,14 +84,30 @@ function App() {
                 calories={52}
                 btnText="Додати"
                 btnColor="btn-success"
-                onAction={() => addMeal({ title: "Яблуко", calories: 52 })}
+                onAction={(weight) =>
+                  addMeal({ title: "Яблуко", calories: 52 }, weight)
+                }
               />
               <Card
-                title="Банан"
-                calories={89}
+                title="Яблуко"
+                calories={52}
+                proteins={0.3}
+                fats={0.2}
+                carbs={14}
                 btnText="Додати"
                 btnColor="btn-success"
-                onAction={() => addMeal({ title: "Банан", calories: 89 })}
+                onAction={(weight) =>
+                  addMeal(
+                    {
+                      title: "Яблуко",
+                      calories: 52,
+                      proteins: 0.3,
+                      fats: 0.2,
+                      carbs: 14,
+                    },
+                    weight,
+                  )
+                }
               />
             </div>
           )}

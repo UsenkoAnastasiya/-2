@@ -4,11 +4,10 @@ function Diary({ meals, onRemove, onSave, history }) {
       <h5 className="card-title mb-3 text-primary">Мій щоденник</h5>
 
       <div className="mb-4">
-        <h6>Продукти за сьогодні (Priority Queue):</h6>
+        <h6>Продукти за сьогодні:</h6>
         {meals.length === 0 ? (
           <p className="small text-muted italic">Ще нічого не з'їдено</p>
         ) : (
-          /* ВИКОРИСТОВУЄМО ТІЛЬКИ ОДИН ЦИКЛ MAP */
           meals.map((item) => (
             <div
               key={item.id}
@@ -32,7 +31,6 @@ function Diary({ meals, onRemove, onSave, history }) {
           ))
         )}
 
-        {/* КНОПКИ КЕРУВАННЯ — ТЕПЕР ВОНИ ТУТ */}
         {meals.length > 0 && (
           <div className="d-flex gap-2 mt-3">
             <button
