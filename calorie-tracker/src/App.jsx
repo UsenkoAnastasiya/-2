@@ -11,7 +11,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [userStats, setUserStats] = useState(null);
   const [todayMeals, setTodayMeals] = useState([]);
-
   const [history, setHistory] = useState([]);
   const removeLastMeal = () => {
     setTodayMeals((prevMeals) => {
@@ -53,7 +52,9 @@ function App() {
   };
   const [availableProducts, setAvailableProducts] = useState([]);
   async function loadProducts() {
-    setAvailableProducts;
+    const response = await fetch("./products.json");
+    const products = await response.json();
+    setAvailableProducts(products);
   }
 
   const handleSaveData = (data) => {
