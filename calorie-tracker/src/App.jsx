@@ -51,6 +51,10 @@ function App() {
       [...prevMeals, newMeal].sort((a, b) => a.calories - b.calories),
     );
   };
+  const [availableProducts, setAvailableProducts] = useState([]);
+  async function loadProducts() {
+    setAvailableProducts;
+  }
 
   const handleSaveData = (data) => {
     setUserStats(data);
@@ -79,36 +83,20 @@ function App() {
         <div className="col-md-4">
           {searchQuery && (
             <div className="search-results">
-              <Card
-                title="Яблуко"
-                calories={52}
-                btnText="Додати"
-                btnColor="btn-success"
-                onAction={(weight) =>
-                  addMeal({ title: "Яблуко", calories: 52 }, weight)
-                }
-              />
-              <Card
-                title="Яблуко"
-                calories={52}
-                proteins={0.3}
-                fats={0.2}
-                carbs={14}
-                btnText="Додати"
-                btnColor="btn-success"
-                onAction={(weight) =>
-                  addMeal(
-                    {
-                      title: "Яблуко",
-                      calories: 52,
-                      proteins: 0.3,
-                      fats: 0.2,
-                      carbs: 14,
-                    },
-                    weight,
-                  )
-                }
-              />
+              {availableProducts
+                .filter((p) =>
+                  p.title.toLowerCase().includes(searchQuery.toLowerCase()),
+                )
+                .map((product) => (
+                  <Card
+                    key={product.id}
+                    title={product.title}
+                    calories={product.calories}
+                    btnText="Додати"
+                    btnColor="btn-success"
+                    onAction={(weight) => addMeal(product, weight)}
+                  />
+                ))}
             </div>
           )}
         </div>

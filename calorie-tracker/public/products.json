@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "title": "Яблуко",
+    "calories": 52,
+    "proteins": 0.3,
+    "fats": 0.2,
+    "carbs": 14
+  },
+  {
+    "id": 2,
+    "title": "Банан",
+    "calories": 89,
+    "proteins": 1.1,
+    "fats": 0.3,
+    "carbs": 23
+  },
+  {
+    "id": 3,
+    "title": "Вісянка",
+    "calories": 370,
+    "proteins": 13,
+    "fats": 6.9,
+    "carbs": 66
+  },
+  {
+    "id": 4,
+    "title": "Куряче філе",
+    "calories": 165,
+    "proteins": 31,
+    "fats": 3.6,
+    "carbs": 0
+  }
+]
