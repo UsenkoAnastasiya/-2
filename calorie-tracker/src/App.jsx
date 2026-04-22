@@ -12,15 +12,32 @@ function App() {
   const [userStats, setUserStats] = useState(null);
   const [todayMeals, setTodayMeals] = useState([]);
   const [history, setHistory] = useState([]);
-  const [availableProducts, setAvailableProducts] = useState([]);
-  async function loadProducts() {
-    const response = await fetch("./products.json");
-    const products = await response.json();
+  async function searchProducts(query) {
+    const response = await fetch(
+      `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&json=1&page_size=10`,
+    );
+    const data = await response.json();
+
+    const products = data.products.map((p) => ({
+      id: p.id,
+      title: p.product_name,
+      calories: Math.round(p.nutriments["energy-kcal_100g"]) || 0,
+      proteins: Math.round(p.nutriments.proteins_100g * 10) / 10 || 0,
+      fats: Math.round(p.nutriments.fat_100g * 10) / 10 || 0,
+      carbs: Math.round(p.nutriments.carbohydrates_100g * 10) / 10 || 0,
+      image: p.image_small_url || p.image_url || "", // ← додай це
+    }));
+
     setAvailableProducts(products);
   }
-  useEffect(() => {
-    loadProducts();
-  }, []);
+  const [availableProducts, setAvailableProducts] = useState([]);
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    if (query) {
+      await searchProducts(query);
+    }
+  };
+
   const removeLastMeal = () => {
     setTodayMeals((prevMeals) => {
       if (prevMeals.length === 0) return prevMeals;
@@ -79,10 +96,9 @@ function App() {
   return (
     <div className="container mt-4">
       <Navbar onNavigate={setActivePage} />
-
       <div className="row mb-3">
         <div className="col-12">
-          <Search onSearch={setSearchQuery} />
+          <Search onSearch={handleSearch} />
         </div>
       </div>
 
@@ -90,20 +106,17 @@ function App() {
         <div className="col-md-4">
           {searchQuery && (
             <div className="search-results">
-              {availableProducts
-                .filter((p) =>
-                  p.title.toLowerCase().includes(searchQuery.toLowerCase()),
-                )
-                .map((product) => (
-                  <Card
-                    key={product.id}
-                    title={product.title}
-                    calories={product.calories}
-                    btnText="Додати"
-                    btnColor="btn-success"
-                    onAction={(weight) => addMeal(product, weight)}
-                  />
-                ))}
+              {availableProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  title={product.title}
+                  image={product.image}
+                  calories={product.calories}
+                  btnText="Додати"
+                  btnColor="btn-success"
+                  onAction={(weight) => addMeal(product, weight)}
+                />
+              ))}
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Card({ title, calories, btnText, btnColor, onAction }) {
+function Card({ title, calories, image, btnText, btnColor, onAction }) {
   const [grams, setGrams] = useState(100);
 
   const calculatedCalories = Math.round((calories / 100) * grams);
@@ -8,7 +8,7 @@ function Card({ title, calories, btnText, btnColor, onAction }) {
   return (
     <div className="card shadow-sm mb-3">
       <img
-        src="https://images.unian.net/photos/2026_03/1773148277-3302.jpg?r=421000"
+        src={image || "https://via.placeholder.com/150"}
         className="card-img-top"
         alt={title}
       />
