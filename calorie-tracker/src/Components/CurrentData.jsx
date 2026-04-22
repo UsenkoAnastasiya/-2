@@ -1,5 +1,4 @@
 import calculateBMR from "../memoize";
-
 function CurrentData({
   stats,
   eatenCalories = 0,

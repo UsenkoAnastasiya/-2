@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CurrentData from "./Components/CurrentData";
 import Navbar from "./Components/Menu";
 import Search from "./Components/Search";
@@ -12,6 +12,15 @@ function App() {
   const [userStats, setUserStats] = useState(null);
   const [todayMeals, setTodayMeals] = useState([]);
   const [history, setHistory] = useState([]);
+  const [availableProducts, setAvailableProducts] = useState([]);
+  async function loadProducts() {
+    const response = await fetch("./products.json");
+    const products = await response.json();
+    setAvailableProducts(products);
+  }
+  useEffect(() => {
+    loadProducts();
+  }, []);
   const removeLastMeal = () => {
     setTodayMeals((prevMeals) => {
       if (prevMeals.length === 0) return prevMeals;
@@ -50,12 +59,6 @@ function App() {
       [...prevMeals, newMeal].sort((a, b) => a.calories - b.calories),
     );
   };
-  const [availableProducts, setAvailableProducts] = useState([]);
-  async function loadProducts() {
-    const response = await fetch("./products.json");
-    const products = await response.json();
-    setAvailableProducts(products);
-  }
 
   const handleSaveData = (data) => {
     setUserStats(data);
@@ -66,6 +69,9 @@ function App() {
   const totals = todayMeals.reduce(
     (acc, meal) => {
       acc.calories += Number(meal.calories) || 0;
+      acc.proteins += Number(meal.proteins) || 0;
+      acc.fats += Number(meal.fats) || 0;
+      acc.carbs += Number(meal.carbs) || 0;
       return acc;
     },
     { calories: 0, proteins: 0, fats: 0, carbs: 0 },
