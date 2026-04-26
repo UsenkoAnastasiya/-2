@@ -25,7 +25,7 @@ function App() {
       proteins: Math.round(p.nutriments.proteins_100g * 10) / 10 || 0,
       fats: Math.round(p.nutriments.fat_100g * 10) / 10 || 0,
       carbs: Math.round(p.nutriments.carbohydrates_100g * 10) / 10 || 0,
-      image: p.image_small_url || p.image_url || "", // ← додай це
+      image: p.image_small_url || p.image_url || "",
     }));
 
     setAvailableProducts(products);
@@ -93,6 +93,13 @@ function App() {
     },
     { calories: 0, proteins: 0, fats: 0, carbs: 0 },
   );
+  async function* streamProducts(products) {
+    for (let i = 0; i < products.length; i += 2) {
+      // я тут зімітую затримку,ніби це важкі данні і приходять поступово з сервера
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      yield products.slice(i, i + 2);
+    }
+  }
   return (
     <div className="container mt-4">
       <Navbar onNavigate={setActivePage} />
