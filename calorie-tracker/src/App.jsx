@@ -18,17 +18,27 @@ function App() {
     );
     const data = await response.json();
 
-    const products = data.products.map((p) => ({
-      id: p.id,
-      title: p.product_name,
-      calories: Math.round(p.nutriments["energy-kcal_100g"]) || 0,
-      proteins: Math.round(p.nutriments.proteins_100g * 10) / 10 || 0,
-      fats: Math.round(p.nutriments.fat_100g * 10) / 10 || 0,
-      carbs: Math.round(p.nutriments.carbohydrates_100g * 10) / 10 || 0,
-      image: p.image_small_url || p.image_url || "",
-    }));
+    const products = data.products
+      .filter(
+        (p) =>
+          p.product_name &&
+          p.image_small_url &&
+          p.nutriments["energy-kcal_100g"],
+      )
+      .map((p) => ({
+        id: p.id,
+        title: p.product_name,
+        calories: Math.round(p.nutriments["energy-kcal_100g"]) || 0,
+        proteins: Math.round(p.nutriments.proteins_100g * 10) / 10 || 0,
+        fats: Math.round(p.nutriments.fat_100g * 10) / 10 || 0,
+        carbs: Math.round(p.nutriments.carbohydrates_100g * 10) / 10 || 0,
+        image: p.image_small_url || p.image_url || "",
+      }));
 
-    setAvailableProducts(products);
+    setAvailableProducts([]);
+    for await (const chunk of streamProducts(products)) {
+      setAvailableProducts((prev) => [...prev, ...chunk]);
+    }
   }
   const [availableProducts, setAvailableProducts] = useState([]);
   const handleSearch = async (query) => {
@@ -95,8 +105,8 @@ function App() {
   );
   async function* streamProducts(products) {
     for (let i = 0; i < products.length; i += 2) {
-      // я тут зімітую затримку,ніби це важкі данні і приходять поступово з сервера
-      await new Promise((resolve) => setTimeout(resolve, 400));
+      // перевірка на затримках побільше
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       yield products.slice(i, i + 2);
     }
   }
