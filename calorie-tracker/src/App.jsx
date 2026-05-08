@@ -105,8 +105,7 @@ function App() {
   );
   async function* streamProducts(products) {
     for (let i = 0; i < products.length; i += 2) {
-      // перевірка на затримках побільше
-      await new Promise((resolve) => setTimeout(resolve, 4000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       yield products.slice(i, i + 2);
     }
   }

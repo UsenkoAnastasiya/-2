@@ -9,7 +9,7 @@ function Navbar({ onNavigate }) {
   };
   return (
     <div className="d-flex justify-content-between align-items-center mb-4">
-      <h1>Мій калькулятор калорій</h1>
+      <h1> Мій калькулятор калорій</h1>
       <div className="dropdown">
         <button
           className="btn btn-secondary dropdown-toggle"
