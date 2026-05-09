@@ -12,6 +12,29 @@ function App() {
   const [userStats, setUserStats] = useState(null);
   const [todayMeals, setTodayMeals] = useState([]);
   const [history, setHistory] = useState([]);
+  const withLogging = (fn, functionName, level = "INFO") => {
+    return (...args) => {
+      const start = performance.now();
+      if (level !== "ERROR") {
+        console.log(
+          `[${level}] ${new Date().toLocaleTimeString()}: Виклик ${functionName}`,
+        );
+        console.log(`[${level}] Аргументи:`, args);
+      }
+      try {
+        const result = fn(...args);
+        const time = (performance.now() - start).toFixed(2);
+        if (level !== "ERROR") {
+          console.log(`[${level}] Результат:`, result);
+          console.log(`[${level}] Час виконання: ${time}мс`);
+        }
+        return result;
+      } catch (err) {
+        console.log(`[ERROR] ${functionName} впав:`, err.message);
+        throw err;
+      }
+    };
+  };
   async function searchProducts(query) {
     const response = await fetch(
       `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&json=1&page_size=10`,
@@ -86,6 +109,7 @@ function App() {
       [...prevMeals, newMeal].sort((a, b) => a.calories - b.calories),
     );
   };
+  const addMealWithLogging = withLogging(addMeal, "addMeal", "INFO");
 
   const handleSaveData = (data) => {
     setUserStats(data);
@@ -130,7 +154,7 @@ function App() {
                   calories={product.calories}
                   btnText="Додати"
                   btnColor="btn-success"
-                  onAction={(weight) => addMeal(product, weight)}
+                  onAction={(weight) => addMealWithLogging(product, weight)}
                 />
               ))}
             </div>
