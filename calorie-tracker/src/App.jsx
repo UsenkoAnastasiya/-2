@@ -5,6 +5,7 @@ import Search from "./Components/Search";
 import Card from "./Components/Card";
 import Diary from "./Components/Diary";
 import UserDataForm from "./Components/UserDataForm";
+import { appEvents } from "./eventEmitter";
 
 function App() {
   const [activePage, setActivePage] = useState(null);
@@ -12,6 +13,57 @@ function App() {
   const [userStats, setUserStats] = useState(null);
   const [todayMeals, setTodayMeals] = useState([]);
   const [history, setHistory] = useState([]);
+  const [availableProducts, setAvailableProducts] = useState([]);
+
+  useEffect(() => {
+    const onMealAdded = (meal) => {
+      setTodayMeals((prev) =>
+        [...prev, meal].sort((a, b) => a.calories - b.calories),
+      );
+    };
+
+    const onMealAddedLog = (meal) => {
+      console.log(
+        "[EventEmitter] meal:added →",
+        meal.title,
+        meal.calories,
+        "kcal",
+      );
+    };
+
+    const onMealRemoved = () => {
+      setTodayMeals((prev) => {
+        if (prev.length === 0) return prev;
+        return prev.slice(0, -1);
+      });
+    };
+
+    const onDaySaved = (meals) => {
+      if (meals.length === 0) return;
+      const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
+      const newHistoryEntry = {
+        date: new Date().toLocaleDateString(),
+        calories: totalCalories,
+        id: Date.now(),
+      };
+      setHistory((prev) => [newHistoryEntry, ...prev]);
+      setTodayMeals([]);
+      alert("День збережено в історію!");
+    };
+
+    appEvents.subscribe("meal:added", onMealAdded);
+    appEvents.subscribe("meal:added", onMealAddedLog);
+    appEvents.subscribe("meal:removed", onMealRemoved);
+    appEvents.subscribe("day:saved", onDaySaved);
+
+    return () => {
+      appEvents.unsubscribe("meal:added", onMealAdded);
+      appEvents.unsubscribe("meal:added", onMealAddedLog);
+      appEvents.unsubscribe("meal:removed", onMealRemoved);
+      appEvents.unsubscribe("day:saved", onDaySaved);
+    };
+  }, []);
+
   const withLogging = (fn, functionName, level = "INFO") => {
     return (...args) => {
       const start = performance.now();
@@ -35,6 +87,36 @@ function App() {
       }
     };
   };
+
+  const addMeal = (product, weight = 100) => {
+    const factor = weight / 100;
+    const newMeal = {
+      ...product,
+      id: Date.now(),
+      calories: Math.round(product.calories * factor),
+      proteins: Math.round(product.proteins * factor * 10) / 10,
+      fats: Math.round(product.fats * factor * 10) / 10,
+      carbs: Math.round(product.carbs * factor * 10) / 10,
+      priority: Math.round(product.calories * factor),
+    };
+    appEvents.emit("meal:added", newMeal);
+  };
+  const addMealWithLogging = withLogging(addMeal, "addMeal", "INFO");
+
+  const removeLastMeal = () => {
+    appEvents.emit("meal:removed");
+  };
+
+  const saveDayToHistory = () => {
+    appEvents.emit("day:saved", todayMeals);
+  };
+
+  const handleSaveData = (data) => {
+    setUserStats(data);
+    setActivePage(null);
+    console.log("App отримав дані користувача:", data);
+  };
+
   async function searchProducts(query) {
     const response = await fetch(
       `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&json=1&page_size=10`,
@@ -63,7 +145,7 @@ function App() {
       setAvailableProducts((prev) => [...prev, ...chunk]);
     }
   }
-  const [availableProducts, setAvailableProducts] = useState([]);
+
   const handleSearch = async (query) => {
     setSearchQuery(query);
     if (query) {
@@ -71,51 +153,12 @@ function App() {
     }
   };
 
-  const removeLastMeal = () => {
-    setTodayMeals((prevMeals) => {
-      if (prevMeals.length === 0) return prevMeals;
-      return prevMeals.slice(0, -1);
-    });
-  };
-  const saveDayToHistory = () => {
-    if (todayMeals.length === 0) return;
-    const totalCalories = todayMeals.reduce(
-      (sum, meal) => sum + meal.calories,
-      0,
-    );
-    const newHistoryEntry = {
-      date: new Date().toLocaleDateString(),
-      calories: totalCalories,
-      id: Date.now(),
-    };
-
-    setHistory([newHistoryEntry, ...history]);
-    setTodayMeals([]);
-    alert("День збережено в історію!");
-  };
-
-  const addMeal = (product, weight = 100) => {
-    const factor = weight / 100;
-    const newMeal = {
-      ...product,
-      id: Date.now(),
-      calories: Math.round(product.calories * factor),
-      proteins: Math.round(product.proteins * factor * 10) / 10,
-      fats: Math.round(product.fats * factor * 10) / 10,
-      carbs: Math.round(product.carbs * factor * 10) / 10,
-      priority: Math.round(product.calories * factor),
-    };
-    setTodayMeals((prevMeals) =>
-      [...prevMeals, newMeal].sort((a, b) => a.calories - b.calories),
-    );
-  };
-  const addMealWithLogging = withLogging(addMeal, "addMeal", "INFO");
-
-  const handleSaveData = (data) => {
-    setUserStats(data);
-    setActivePage(null);
-    console.log("App отримав дані користувача:", data);
-  };
+  async function* streamProducts(products) {
+    for (let i = 0; i < products.length; i += 2) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      yield products.slice(i, i + 2);
+    }
+  }
 
   const totals = todayMeals.reduce(
     (acc, meal) => {
@@ -127,12 +170,7 @@ function App() {
     },
     { calories: 0, proteins: 0, fats: 0, carbs: 0 },
   );
-  async function* streamProducts(products) {
-    for (let i = 0; i < products.length; i += 2) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      yield products.slice(i, i + 2);
-    }
-  }
+
   return (
     <div className="container mt-4">
       <Navbar onNavigate={setActivePage} />
@@ -174,7 +212,6 @@ function App() {
                   history={history}
                 />
               )}
-
               {!activePage && (
                 <div className="alert alert-info text-center">
                   Виберіть розділ у меню, щоб почати
