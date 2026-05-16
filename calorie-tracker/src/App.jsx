@@ -6,7 +6,7 @@ import Card from "./Components/Card";
 import Diary from "./Components/Diary";
 import UserDataForm from "./Components/UserDataForm";
 import { appEvents } from "./eventEmitter";
-
+import { proxy } from "./apiProxy";
 function App() {
   const [activePage, setActivePage] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -118,11 +118,9 @@ function App() {
   };
 
   async function searchProducts(query) {
-    const response = await fetch(
-      `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${query}&json=1&page_size=10`,
+    const data = await proxy.request(
+      `/cgi/search.pl?search_terms=${query}&json=1&page_size=10`,
     );
-    const data = await response.json();
-
     const products = data.products
       .filter(
         (p) =>
