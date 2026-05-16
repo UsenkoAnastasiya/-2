@@ -39,6 +39,6 @@ class ApiProxy {
 
 export const proxy = new ApiProxy(
   "https://world.openfoodfacts.org",
-  "apiKey",
+  "none",
   "demo-token",
 );
